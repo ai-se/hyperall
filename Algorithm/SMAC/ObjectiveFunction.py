@@ -1,5 +1,5 @@
 import pandas as pd
-import os
+from random import sample
 
 
 class ObjetiveFunction:
@@ -25,6 +25,24 @@ class ObjetiveFunction:
                 import pdb
                 pdb.set_trace()
             self.content[','.join(map(str, indep))] = dep
+
+    def get_configurations(self):
+        configs = self.content.keys()
+        rets = []
+        for config in configs:
+            rets.append(map(float, config.split(',')))
+        assert(len(rets) == len(configs)), "Something is wrong"
+
+    def get_random_configurations(self, size):
+        configs = self.content.keys()
+        ret_configs = sample(configs, size)
+        ret = [map(float, c.split(',')) for c in ret_configs]
+        return ret
+
+    def get_performance(self, config):
+        """ Always expects the config to a list of numbers"""
+        key = ','.join(map(str, config))
+        return self.content[key]
 
 
 def _objective_function():
