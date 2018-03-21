@@ -1,12 +1,12 @@
 import pandas as pd
 from random import sample
+from collections import OrderedDict
 
-
-class ObjetiveFunction:
+class ConfigSpace:
     def __init__(self, filename):
         self.filename = filename
         # Store the content as a dict for faster access
-        self.content = {}
+        self.content = OrderedDict()
         self.set_content()
 
     def set_content(self):
@@ -20,11 +20,11 @@ class ObjetiveFunction:
             indep = row[ctrain_indep].tolist()
             # Single objective
             dep = row[ctrain_dep].tolist()[0]
-            if ','.join(map(str, indep)) in self.content.keys():
+            if ','.join(map(str, map(float, indep))) in self.content.keys():
                 print "Duplicate exists"
                 import pdb
                 pdb.set_trace()
-            self.content[','.join(map(str, indep))] = dep
+            self.content[','.join(map(str, map(float, indep)))] = dep
 
     def get_configurations(self):
         configs = self.content.keys()
@@ -32,8 +32,13 @@ class ObjetiveFunction:
         for config in configs:
             rets.append(map(float, config.split(',')))
         assert(len(rets) == len(configs)), "Something is wrong"
+        return rets
 
-    def get_random_configurations(self, size):
+    def get_performances(self):
+        return self.content.values()
+
+    def get_sample_configuration(self, size):
+        print "get_sample_configuration: ", size
         configs = self.content.keys()
         ret_configs = sample(configs, size)
         ret = [map(float, c.split(',')) for c in ret_configs]
@@ -44,10 +49,13 @@ class ObjetiveFunction:
         key = ','.join(map(str, config))
         return self.content[key]
 
+    def get_configuration_size(self):
+        return len(self.content.keys())
+
 
 def _objective_function():
     filename = "~/GIT/hyperall/Config/Data/Apache_AllMeasurements.csv"
-    dataset_obj = ObjetiveFunction(filename)
+    dataset_obj = ConfigSpace(filename)
 
 
 if __name__ == "__main__":
