@@ -16,7 +16,7 @@ class RandomForestWithInstances:
     def predict(self, independents):
         means = []
         vars = []
-        np_independents = np.array([independents])
+        np_independents = np.array(independents)
 
         for id in range(np_independents.shape[0]):
             preds = []

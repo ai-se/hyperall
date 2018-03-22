@@ -10,7 +10,8 @@ class RunHistory:
         key = ','.join(map(str, config))
         if key in self.runhistory.keys():
             print "This has been sampled and measured in a previous iteration. Please check the code"
-            exit()
+            import pdb
+            pdb.set_trace()
         self.runhistory[key] = performance
 
     def get_all_configs(self):
@@ -19,7 +20,6 @@ class RunHistory:
         return configs
 
     def get_candidates(self):
-        print self.runhistory.keys()
         configs = [map(float, x.split(',')) for x in self.runhistory.keys()]
         return configs, self.runhistory.values()
 
@@ -29,6 +29,11 @@ class RunHistory:
 
     def get_incumbent(self, lessismore=True):
         if lessismore is True:
-            return min(self.runhistory.keys())
+            return min(self.runhistory.values())
         else:
-            return max(self.runhistory.keys())
+            return max(self.runhistory.values())
+
+    def is_present(self, config):
+        t_config = ','.join(map(str, map(float, config)))
+        if t_config in self.runhistory.keys(): return True
+        else: return False

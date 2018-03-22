@@ -246,12 +246,12 @@ class ChallengerList(object):
     def __iter__(self):
         return self
 
-    def __next__(self):
+    def get_next(self):
         if self._index == len(self.challengers) and not self._next_is_random:
             raise StopIteration
         elif self._next_is_random:
             self._next_is_random = False
-            config = self.configuration_space.sample_configuration()
+            config = self.configuration_space.get_sample_configuration()[-1]
             return config
         else:
             self._next_is_random = True

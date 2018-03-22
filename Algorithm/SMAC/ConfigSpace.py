@@ -37,7 +37,7 @@ class ConfigSpace:
     def get_performances(self):
         return self.content.values()
 
-    def get_sample_configuration(self, size):
+    def get_sample_configuration(self, size=1):
         print "get_sample_configuration: ", size
         configs = self.content.keys()
         ret_configs = sample(configs, size)
