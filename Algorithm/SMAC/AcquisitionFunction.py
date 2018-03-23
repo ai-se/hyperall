@@ -18,7 +18,6 @@ class AbstractAcquisitionFunction(object):
         raise NotImplementedError
 
 
-
 class LogEI(AbstractAcquisitionFunction):
 
     def __init__(self, model, par=0.0, **kwargs):
