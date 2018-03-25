@@ -1,4 +1,4 @@
-# -*- encoding: utf-8 -*-
+
 import sklearn.model_selection
 import sklearn.datasets
 import sklearn.metrics
@@ -9,7 +9,6 @@ from sklearn.ensemble import RandomForestClassifier
 import autosklearn.classification
 import pandas as pd
 import pickle
-
 
 def run_default(train, test, perf_measure=None):
     start_time = time()
@@ -41,9 +40,10 @@ def run_default(train, test, perf_measure=None):
 
     predictions = model.predict(test_X)
 
-    perf_score = sklearn.metrics.accuracy_score(test_Y, predictions)
+    # perf_score = sklearn.metrics.accuracy_score(test_Y, predictions)
+    confusion_matrix = sklearn.metrics.confusion_matrix(test_Y, predictions)
 
-    return [perf_score, time()-start_time]
+    return [confusion_matrix, time()-start_time]
 
 
 def run_experiment(train, test, perf_measure=None):
@@ -82,6 +82,8 @@ def run_experiment(train, test, perf_measure=None):
         delete_tmp_folder_after_terminate=False,
         resampling_strategy='cv',
         resampling_strategy_arguments={'folds': 3},
+        include_estimators=["random_forest", ], exclude_estimators=None,
+        include_preprocessors = ["no_preprocessing", ], exclude_preprocessors = None
     )
 
     # fit() changes the data in place, but refit needs the original data. We
@@ -95,8 +97,9 @@ def run_experiment(train, test, perf_measure=None):
     # print(automl.show_models())
 
     predictions = automl.predict(test_X)
-    perf_score =  sklearn.metrics.accuracy_score(test_Y, predictions)
-    return [perf_score, time() - start_time], automl.show_models()
+    # perf_score =  sklearn.metrics.accuracy_score(test_Y, predictions)
+    confusion_matrix = sklearn.metrics.confusion_matrix(test_Y, predictions)
+    return [confusion_matrix, time() - start_time], automl.show_models()
 
 
 if __name__ == '__main__':
@@ -109,7 +112,7 @@ if __name__ == '__main__':
         versions = [project + file for file in sorted(os.listdir(project))]
         groups = [Experiment(versions[i-1], versions[i]) for i in range(1, len(versions))]
         results = {}
-        for _ in range(20):
+        for rep in range(20):
             for group in groups:
                 if group not in results.keys():
                     results[group] = {}
@@ -123,5 +126,5 @@ if __name__ == '__main__':
                 results[group]['automl'].append(automl)
                 results[group]['default'].append(default)
                 results[group]['automl_model'].append(model)
-        pickle.dump(results, open('./PickleLocker/' + project.replace(data_folder, '')[:-1] + '.p', 'w'))
+            pickle.dump(results, open('./PickleLocker/' + project.replace(data_folder, '')[:-1] + '_' + str(rep) + '.p', 'wb'))
 
