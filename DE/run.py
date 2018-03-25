@@ -37,14 +37,14 @@ def call_de(i, x, training_data, testing_data, fold_indexes, goal="Max", term="E
     v, pareto = de.solve(process, OrderedDict(param_grid[i]['learners_para_dic']),
                          param_grid[i]['learners_para_bounds'], param_grid[i]['learners_para_categories'],
                          param_grid[i]['model'], x, [train_data, tune_data])
-    params = v.ind
+    params = v.ind.values()
     training_data = training_data.values
     predicted_tune = param_grid[i]['model'](training_data[:, :-1], training_data[:, -1],
                                             test_data[:, :-1], params)
     predicted_default = param_grid[i]['model'](training_data[:, :-1], training_data[:, -1],
                                                test_data[:, :-1], None)
-    val_tune = evaluate(x, predicted_tune, test_data[:, -1])
-    val_predicted = evaluate(x, predicted_default, test_data[:, -1])
+    val_tune = evaluation(x, predicted_tune, test_data[:, -1], test_data[:, :-1])
+    val_predicted = evaluation(x, predicted_default, test_data[:, -1], test_data[:, :-1])
     print("For measure %s: default=%s, predicted=%s" % (x, val_predicted, val_tune))
     return val_tune, params
 
@@ -92,7 +92,7 @@ def run_DE(train, test, perf_measures, learners, name=''):
                                               [train_index, tune_index], "Min", "Late")
                     else:
                         val, params = call_de(i, x, train_df, test_df,
-                                              [train_index, tune_index], "Max", "Late")
+                                              [train_index, tune_index], "Max", "Early")
                     l.append(val)
                     l1.append(params)
             total_time = time.time() - start_time
@@ -108,7 +108,7 @@ if __name__ == '__main__':
         train = [d for d in data[dataset][:-1]]
         test = [data[dataset][-1]]
         perf_measures = ["f1"]
-        learners = ["knn", "dt", "rf", "svm"]
+        learners = ["svm", "knn", "dt", "rf"]
         name = dataset
         run_DE(train, test, perf_measures, learners, name)
 
