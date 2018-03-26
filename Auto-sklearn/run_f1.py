@@ -86,7 +86,7 @@ def run_experiment(train, test, seed, perf_measure=None):
 
     # fit() changes the data in place, but refit needs the original data. We
     # therefore copy the data. In practice, one should reload the data
-    automl.fit(train_X.copy(), train_Y.copy(), metric=autosklearn.metrics.f1_score)
+    automl.fit(train_X.copy(), train_Y.copy(), metric=autosklearn.metrics.f1)
     # During fit(), models are fit on individual cross-validation folds. To use
     # all available data, we call refit() which trains all models in the
     # final ensemble on the whole dataset.
@@ -139,7 +139,7 @@ def run_experiment_all(train, test, seed, perf_measure=None):
 
     # fit() changes the data in place, but refit needs the original data. We
     # therefore copy the data. In practice, one should reload the data
-    automl.fit(train_X.copy(), train_Y.copy(), metric=autosklearn.metrics.f1_score)
+    automl.fit(train_X.copy(), train_Y.copy(), metric=autosklearn.metrics.f1)
     # During fit(), models are fit on individual cross-validation folds. To use
     # all available data, we call refit() which trains all models in the
     # final ensemble on the whole dataset.
