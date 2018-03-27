@@ -157,7 +157,18 @@ if __name__ == '__main__':
     Experiment = collections.namedtuple('Experiment', 'train test')
     data_folder = "../Data/DefectPrediction/"
 
-    projects = [data_folder + folder + '/' for folder in os.listdir(data_folder) if os.path.isdir(data_folder+folder) is True]
+    projects = [
+        # '../Data/DefectPrediction/ant/',
+        # '../Data/DefectPrediction/camel/',
+        # '../Data/DefectPrediction/ivy/',
+        # '../Data/DefectPrediction/jedit/',
+        # '../Data/DefectPrediction/log4j/',
+        # '../Data/DefectPrediction/lucene/',
+        # '../Data/DefectPrediction/poi/',
+        # '../Data/DefectPrediction/synapse/',
+        # '../Data/DefectPrediction/velocity/',
+        # '../Data/DefectPrediction/xerces/'
+    ]
     for project in projects:
         versions = [project + file for file in sorted(os.listdir(project))]
         groups = [Experiment(versions[i-1], versions[i]) for i in range(1, len(versions))]
