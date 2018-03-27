@@ -61,8 +61,8 @@ def run_DE(train, test, perf_measures, learners, name=''):
 
     seed(1)
     np.random.seed(1)
-    repeats = 1
-    fold = 5
+    repeats = 20
+    fold = 3
     train_paths = [os.path.join(data_path, file_name) for file_name in train]
     test_paths = [os.path.join(data_path, file_name) for file_name in test]
     train_df = pd.concat([pd.read_csv(path) for path in train_paths], ignore_index=True)
@@ -107,7 +107,7 @@ if __name__ == '__main__':
     for dataset in data.keys():
         train = [d for d in data[dataset][:-1]]
         test = [data[dataset][-1]]
-        perf_measures = ["f1"]
+        perf_measures = ["precision"]
         learners = ["svm", "knn", "dt", "rf"]
         name = dataset
         run_DE(train, test, perf_measures, learners, name)
