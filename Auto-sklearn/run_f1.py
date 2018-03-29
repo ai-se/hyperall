@@ -199,8 +199,6 @@ if __name__ == '__main__':
                 assert(len(group) == 2), "Something is wrong"
                 default = run_default(group.train, group.test)
                 automl, model = run_experiment(group.train, group.test, run_count=25, seed=rep)
-                import pdb
-                pdb.set_trace()
                 automl_all, model_all = run_experiment_all(group.train, group.test, run_count=25, seed=rep)
 
                 print(automl, automl_all, default)
