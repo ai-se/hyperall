@@ -198,8 +198,8 @@ if __name__ == '__main__':
 
                 assert(len(group) == 2), "Something is wrong"
                 default = run_default(group.train, group.test)
-                automl, model = run_experiment(group.train, group.test, run_count=25, seed=rep)
-                automl_all, model_all = run_experiment_all(group.train, group.test, run_count=25, seed=rep)
+                automl, model = run_experiment(group.train, group.test, run_count=50, seed=rep)
+                automl_all, model_all = run_experiment_all(group.train, group.test, run_count=50, seed=rep)
 
                 print(automl, automl_all, default)
 
@@ -210,5 +210,5 @@ if __name__ == '__main__':
                 results[group]['automl_all_model'].append(model_all)
 
 
-            pickle.dump(results, open('./PickleLocker_F1_25/' + project.replace(data_folder, '')[:-1] + '_' + str(rep) + '.p', 'wb'))
+            pickle.dump(results, open('./PickleLocker_F1_50/' + project.replace(data_folder, '')[:-1] + '_' + str(rep) + '.p', 'wb'))
 
