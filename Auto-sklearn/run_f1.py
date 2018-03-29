@@ -76,7 +76,7 @@ def run_experiment(train, test, seed, run_count=100, perf_measure=None):
 
 
     automl = autosklearn.classification.AutoSklearnClassifier(
-        time_left_for_this_task=200,
+        time_left_for_this_task=3600,
         per_run_time_limit=30,
         resampling_strategy='cv',
         resampling_strategy_arguments={'folds': 3},
@@ -135,7 +135,7 @@ def run_experiment_all(train, test, seed, run_count=100, perf_measure=None):
     assert(train_X.shape[0] == len(train_Y)), "Something is wrong"
 
     automl = autosklearn.classification.AutoSklearnClassifier(
-        time_left_for_this_task=220,
+        time_left_for_this_task=3600,
         per_run_time_limit=30,
         resampling_strategy='cv',
         resampling_strategy_arguments={'folds': 3},
