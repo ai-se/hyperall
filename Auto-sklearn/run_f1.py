@@ -46,7 +46,7 @@ def run_default(train, test, perf_measure=None):
     return [confusion_matrix, time()-start_time]
 
 
-def run_experiment(train, test, seed, perf_measure=None):
+def run_experiment(train, test, seed, run_count=100, perf_measure=None):
     start_time = time()
     # Setting up Training Data
     train_ds = pd.read_csv(train)
@@ -74,26 +74,31 @@ def run_experiment(train, test, seed, perf_measure=None):
     test_Y = [0 if x==0 else 1 for x in test_ds[test_dep_column]]
     assert(train_X.shape[0] == len(train_Y)), "Something is wrong"
 
+
     automl = autosklearn.classification.AutoSklearnClassifier(
-        time_left_for_this_task=120,
+        time_left_for_this_task=200,
         per_run_time_limit=30,
         resampling_strategy='cv',
         resampling_strategy_arguments={'folds': 3},
         include_estimators=["random_forest", ], exclude_estimators=None,
         include_preprocessors = ["no_preprocessing", ], exclude_preprocessors = None,
-        seed=seed
+        ensemble_size=0,
+        seed=seed,
+        smac_scenario_args={'runcount_limit': run_count}
     )
 
     # fit() changes the data in place, but refit needs the original data. We
     # therefore copy the data. In practice, one should reload the data
     automl.fit(train_X.copy(), train_Y.copy(), metric=autosklearn.metrics.f1)
+
+
+    # print(automl.show_models())
+    automl.fit_ensemble(train_Y, ensemble_size=50)
+
     # During fit(), models are fit on individual cross-validation folds. To use
     # all available data, we call refit() which trains all models in the
     # final ensemble on the whole dataset.
     automl.refit(train_X.copy(), train_Y.copy())
-
-    # print(automl.show_models())
-
     predictions = automl.predict(test_X)
 
     # perf_score =  sklearn.metrics.accuracy_score(test_Y, predictions)
@@ -101,7 +106,7 @@ def run_experiment(train, test, seed, perf_measure=None):
     return [confusion_matrix, time() - start_time], automl.show_models()
 
 
-def run_experiment_all(train, test, seed, perf_measure=None):
+def run_experiment_all(train, test, seed, run_count=100, perf_measure=None):
     start_time = time()
     # Setting up Training Data
     train_ds = pd.read_csv(train)
@@ -134,12 +139,19 @@ def run_experiment_all(train, test, seed, perf_measure=None):
         per_run_time_limit=30,
         resampling_strategy='cv',
         resampling_strategy_arguments={'folds': 3},
-        seed=seed
+        ensemble_size=0,
+        seed=seed,
+        smac_scenario_args={'runcount_limit': run_count}
     )
 
     # fit() changes the data in place, but refit needs the original data. We
     # therefore copy the data. In practice, one should reload the data
+    # fit() changes the data in place, but refit needs the original data. We
+    # therefore copy the data. In practice, one should reload the data
     automl.fit(train_X.copy(), train_Y.copy(), metric=autosklearn.metrics.f1)
+
+    # print(automl.show_models())
+    automl.fit_ensemble(train_Y, ensemble_size=50)
     # During fit(), models are fit on individual cross-validation folds. To use
     # all available data, we call refit() which trains all models in the
     # final ensemble on the whole dataset.
@@ -186,8 +198,10 @@ if __name__ == '__main__':
 
                 assert(len(group) == 2), "Something is wrong"
                 default = run_default(group.train, group.test)
-                automl, model = run_experiment(group.train, group.test, rep)
-                automl_all, model_all = run_experiment_all(group.train, group.test, rep)
+                automl, model = run_experiment(group.train, group.test, run_count=25, seed=rep)
+                import pdb
+                pdb.set_trace()
+                automl_all, model_all = run_experiment_all(group.train, group.test, run_count=25, seed=rep)
 
                 print(automl, automl_all, default)
 
@@ -198,5 +212,5 @@ if __name__ == '__main__':
                 results[group]['automl_all_model'].append(model_all)
 
 
-            pickle.dump(results, open('./PickleLocker_F1/' + project.replace(data_folder, '')[:-1] + '_' + str(rep) + '.p', 'wb'))
+            pickle.dump(results, open('./PickleLocker_F1_25/' + project.replace(data_folder, '')[:-1] + '_' + str(rep) + '.p', 'wb'))
 
