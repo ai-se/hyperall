@@ -3,7 +3,7 @@ import sys
 sys.dont_write_bytecode = True
 import os
 from collections import OrderedDict
-from sklearn.cross_validation import StratifiedKFold
+from sklearn.model_selection import GroupKFold, KFold
 from learner import *
 from DE import DE
 from random import seed
@@ -14,19 +14,42 @@ from params_grid import param_grid
 
 ## Global Bounds
 cwd = os.getcwd()
-data_path = os.path.join(cwd, "Data/")
+data_path = os.path.join(cwd, "../Data/DefectPrediction/")
 print(data_path)
-data = {"@ivy":     ["ivy-1.1.csv", "ivy-1.4.csv", "ivy-2.0.csv"],\
-        "@lucene":  ["lucene-2.0.csv", "lucene-2.2.csv", "lucene-2.4.csv"],\
-        "@poi":     ["poi-1.5.csv", "poi-2.0.csv", "poi-2.5.csv", "poi-3.0.csv"],\
-        "@synapse": ["synapse-1.0.csv", "synapse-1.1.csv", "synapse-1.2.csv"],\
-        "@velocity":["velocity-1.4.csv", "velocity-1.5.csv", "velocity-1.6.csv"], \
-        "@camel": ["camel-1.0.csv", "camel-1.2.csv", "camel-1.4.csv", "camel-1.6.csv"], \
-        "@jedit": ["jedit-3.2.csv", "jedit-4.0.csv", "jedit-4.1.csv", "jedit-4.2.csv", "jedit-4.3.csv"], \
-        "@log4j": ["log4j-1.0.csv", "log4j-1.1.csv", "log4j-1.2.csv"], \
-        "@xalan": ["xalan-2.4.csv", "xalan-2.5.csv", "xalan-2.6.csv", "xalan-2.7.csv"], \
-        "@xerces": ["xerces-1.2.csv", "xerces-1.3.csv", "xerces-1.4.csv"]
-        }
+data = ["ivy", "lucene", "poi", "synapse", "velocity",
+        "camel", "jedit", "log4j", "ant", "xerces"]
+
+
+def load_data(train, test, name):
+    # Setting up Training Data
+    train_paths = [os.path.join(data_path, name, file_name) for file_name in train]
+    test_paths = [os.path.join(data_path, name, file_name) for file_name in test]
+    #print(train_paths, test_paths)
+    train_ds = pd.concat([pd.read_csv(path) for path in train_paths], ignore_index=True)
+    train_columns = [col for col in train_ds.columns if '$' in col]
+    train_indep_columns = [col for col in train_columns if '$<' not in col]
+    train_dep_columns = [col for col in train_columns if '$<' in col]
+    assert (len(train_dep_columns) == 1), "Something is wrong"
+    train_dep_column = train_dep_columns[-1]
+    train_ds[train_dep_column] = train_ds[train_dep_column].apply(lambda x: 0 if x == 0 else 1)
+
+    #train_X = train_ds[train_indep_columns]
+    #train_Y = [0 if x == 0 else 1 for x in train_ds[train_dep_column]]
+
+    # Setting up Testing Data
+    test_ds = pd.concat([pd.read_csv(path) for path in test_paths], ignore_index=True)
+    test_columns = [col for col in test_ds.columns if '$' in col]
+    test_indep_columns = [col for col in test_columns if '$<' not in col]
+    test_dep_columns = [col for col in test_columns if '$<' in col]
+    assert (len(test_dep_columns) == 1), "Something is wrong"
+    test_dep_column = test_dep_columns[-1]
+    test_ds[test_dep_column] = test_ds[test_dep_column].apply(lambda x: 0 if x == 0 else 1)
+
+    #test_X = test_ds[test_indep_columns]
+    #test_Y = [0 if x == 0 else 1 for x in test_ds[test_dep_column]]
+    #assert (test_X.shape[0] == len(test_Y)), "Something is wrong"
+    #return [train_X.values, np.array(train_Y)], [test_X.values, np.array(test_Y)]
+    return train_ds, test_ds
 
 
 def call_de(i, x, training_data, testing_data, fold_indexes, goal="Max", term="Early"):
@@ -58,22 +81,16 @@ def run_DE(train, test, perf_measures, learners, name=''):
     :param perf_measure: Accuracy, recall etc.
     :return: performance measure
     """
-
-    seed(1)
-    np.random.seed(1)
+    seed(47)
+    np.random.seed(47)
     repeats = 20
     fold = 3
-    train_paths = [os.path.join(data_path, file_name) for file_name in train]
-    test_paths = [os.path.join(data_path, file_name) for file_name in test]
-    train_df = pd.concat([pd.read_csv(path) for path in train_paths], ignore_index=True)
-    test_df = pd.concat([pd.read_csv(path) for path in test_paths], ignore_index=True)
-
-    ### getting rid of first 3 columns
+    train_df, test_df = load_data(train, test, name)
     train_df, test_df = train_df.iloc[:, 3:], test_df.iloc[:, 3:]
-    train_df['bug'] = train_df['bug'].apply(lambda x: 0 if x == 0 else 1)
-    test_df['bug'] = test_df['bug'].apply(lambda x: 0 if x == 0 else 1)
-
     final_dic={}
+    save_pickle_address = 'dump/' + perf_measures[0] + "_" + train[-1] + '_early.pickle'
+    print(save_pickle_address)
+
     for x in perf_measures:
         temp = {}
         print(x)
@@ -84,8 +101,8 @@ def run_DE(train, test, perf_measures, learners, name=''):
             print("Learner: %s" % i)
             for r in xrange(repeats):
                 print("Repeating: %s" % r)
-                kf = StratifiedKFold(train_df.loc[:, "bug"].values, fold,
-                                     shuffle=True)
+                kfold = KFold(n_splits=fold, shuffle=True)
+                kf = kfold.split(train_df.loc[:, "$<bug"].values)
                 for train_index, tune_index in kf:
                     if x == "d2h":
                         val, params = call_de(i, x, train_df, test_df,
@@ -99,18 +116,17 @@ def run_DE(train, test, perf_measures, learners, name=''):
             temp[param_grid[i]['model'].__name__] = [l, l1, total_time]
             print(temp)
         final_dic[x] = temp
-    with open('dump/' + name + '_early.pickle', 'wb') as handle:
+    with open(save_pickle_address, 'wb') as handle:
         pickle.dump(final_dic, handle)
 
 
 if __name__ == '__main__':
-    for dataset in data.keys():
-        train = [d for d in data[dataset][:-1]]
-        test = [data[dataset][-1]]
-        perf_measures = ["precision"]
-        learners = ["svm", "knn", "dt", "rf"]
-        name = dataset
-        run_DE(train, test, perf_measures, learners, name)
+    perf_measures = ["precision"]
+    learners = ["svm", "knn", "dt", "rf"]
+    for dataset in data:
+        datasets = [x[2] for x in os.walk("../Data/DefectPrediction/%s" % dataset)][0]
+        for i in range(len(datasets)-1):
+            run_DE([datasets[i]], [datasets[i+1]], perf_measures, learners, dataset)
 
 
 

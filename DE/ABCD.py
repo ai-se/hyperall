@@ -1,11 +1,12 @@
 from __future__ import division
-import math
+from pdb import set_trace
 
 class counter():
   def __init__(self, before, after, indx):
     self.indx = indx
     self.actual = before
     self.predicted = after
+    #print(self.actual, self.predicted)
     self.TP, self.TN, self.FP, self.FN = 0, 0, 0, 0
     for a, b in zip(self.actual, self.predicted):
       if a == indx and b == indx:
@@ -18,6 +19,7 @@ class counter():
         self.FN += 1
       elif a != indx and b != indx:
         pass
+    #print(self.TP, self.TN, self.FP, self.FN)
   def stats(self):
     try:
       Sen = self.TP / (self.TP + self.FN)
@@ -25,18 +27,19 @@ class counter():
       Prec = self.TP / (self.TP + self.FP)
       Acc = (self.TP + self.TN) / (self.TP + self.FN + self.TN + self.FP)
       F = 2 * (Prec*Sen) / (Prec+Sen)
+      fpr = 1 - Spec
+      F2 = 5 * (Prec * Sen) / (4*Prec + Sen)
       F1 = 2 * self.TP / (2 * self.TP + self.FP + self.FN)
       G = 2 * Sen * Spec / (Sen + Spec)
       G1 = Sen * Spec / (Sen + Spec)
-      return Sen, Prec, Spec, Acc, F, G
+      d2h= fpr ** 2 + (1 - Sen) ** 2
+      return round(Sen,2), round(Prec,2), round(Spec,2), \
+             round(Acc,2), round(F,2), round(G,2), round(F2,2), round(d2h,2)
     except ZeroDivisionError:
-      return 0, 0, 0, 0, 0, 0, 0
+      return 0, 0, 0, 0, 0, 0, 0, 0
 
 
 class ABCD():
-
-  "Statistics Stuff, confusion matrix, all that jazz..."
-
   def __init__(self, before, after):
     self.actual = before
     self.predicted = after
