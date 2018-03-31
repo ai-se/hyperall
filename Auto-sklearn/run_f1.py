@@ -170,7 +170,7 @@ if __name__ == '__main__':
     data_folder = "../Data/DefectPrediction/"
 
     projects = [
-                # '../Data/DefectPrediction/ant/',
+                 '../Data/DefectPrediction/ant/',
                 # '../Data/DefectPrediction/camel/',
                 # '../Data/DefectPrediction/ivy/',
                 # '../Data/DefectPrediction/jedit/',
