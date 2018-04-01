@@ -162,7 +162,7 @@ if __name__ == '__main__':
         # '../Data/DefectPrediction/camel/',
         # '../Data/DefectPrediction/ivy/',
         # '../Data/DefectPrediction/jedit/',
-        # '../Data/DefectPrediction/log4j/',
+         '../Data/DefectPrediction/log4j/',
         # '../Data/DefectPrediction/lucene/',
         # '../Data/DefectPrediction/poi/',
         # '../Data/DefectPrediction/synapse/',
