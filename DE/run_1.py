@@ -17,7 +17,7 @@ cwd = os.getcwd()
 data_path = os.path.join(cwd, "../Data/DefectPrediction/")
 print(data_path)
 data = ["ivy", "lucene", "poi", "synapse", "velocity",
-        "camel", "jedit", "log4j", "ant", "xerces"]
+        "camel", "log4j", "ant", "xerces", "jedit"]
 
 
 def load_data(train, test, name):
@@ -56,7 +56,7 @@ def call_de(i, x, training_data, testing_data, fold_indexes, goal="Max", term="E
     train_data = training_data.ix[fold_indexes[0]].values
     tune_data = training_data.ix[fold_indexes[1]].values
     test_data = testing_data.values
-    de = DE(GEN=2, Goal=goal, termination=term)
+    de = DE(NP=5, GEN=5, Goal=goal, termination=term)
     v, pareto = de.solve(process, OrderedDict(param_grid[i]['learners_para_dic']),
                          param_grid[i]['learners_para_bounds'], param_grid[i]['learners_para_categories'],
                          param_grid[i]['model'], x, [train_data, tune_data])
@@ -88,7 +88,7 @@ def run_DE(train, test, perf_measures, learners, name=''):
     train_df, test_df = load_data(train, test, name)
     train_df, test_df = train_df.iloc[:, 3:], test_df.iloc[:, 3:]
     final_dic={}
-    save_pickle_address = 'dump/' + perf_measures[0] + "_" + train[-1] + '_early.pickle'
+    save_pickle_address = 'dump/' + "25_" + perf_measures[0] + "_" + train[-1] + '_early.pickle'
     print(save_pickle_address)
 
     for x in perf_measures:
@@ -121,7 +121,7 @@ def run_DE(train, test, perf_measures, learners, name=''):
 
 
 if __name__ == '__main__':
-    perf_measures = ["precision"]
+    perf_measures = ["f1"]
     learners = ["svm", "knn", "dt", "rf"]
     for dataset in data:
         datasets = [x[2] for x in os.walk("../Data/DefectPrediction/%s" % dataset)][0]
