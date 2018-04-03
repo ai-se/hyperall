@@ -46,7 +46,7 @@ def run_default(train, test, perf_measure=None):
     return [confusion_matrix, time()-start_time]
 
 
-def run_experiment(train, test, seed, run_count=100, perf_measure=None):
+def run_experiment(train, test, seed, run_count, perf_measure):
     start_time = time()
     # Setting up Training Data
     train_ds = pd.read_csv(train)
@@ -151,7 +151,7 @@ if __name__ == '__main__':
 
                         assert(len(group) == 2), "Something is wrong"
                         default = run_default(group.train, group.test)
-                        automl, model = run_experiment(group.train, group.test, run_count=eval, seed=rep)
+                        automl, model = run_experiment(group.train, group.test, run_count=eval, seed=rep, perf_measure=perf_measure)
                         # automl_all, model_all = run_experiment_all(group.train, group.test, run_count=100, seed=rep)
 
                         print(automl, default)
