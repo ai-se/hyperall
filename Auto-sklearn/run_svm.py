@@ -127,9 +127,9 @@ if __name__ == '__main__':
                 # '../Data/DefectPrediction/log4j/',
                 # '../Data/DefectPrediction/lucene/',
                 # '../Data/DefectPrediction/poi/',
-                # '../Data/DefectPrediction/synapse/',
+                 '../Data/DefectPrediction/synapse/',
                 # '../Data/DefectPrediction/velocity/',
-                '../Data/DefectPrediction/xerces/'
+                #'../Data/DefectPrediction/xerces/'
                 ]
 
     evals = [25, 50 ,100]
@@ -140,7 +140,7 @@ if __name__ == '__main__':
                 versions = [project + file for file in sorted(os.listdir(project))]
                 groups = [Experiment(versions[i-1], versions[i]) for i in range(1, len(versions))]
                 results = {}
-                for rep in range(1):
+                for rep in range(20):
                     for group in groups:
                         if group not in results.keys():
                             results[group] = {}
