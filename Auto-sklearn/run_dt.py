@@ -125,10 +125,10 @@ if __name__ == '__main__':
                 # '../Data/DefectPrediction/jedit/',
                 # '../Data/DefectPrediction/log4j/',
                 # '../Data/DefectPrediction/lucene/',
-                # '../Data/DefectPrediction/poi/',
+                '../Data/DefectPrediction/poi/',
                 # '../Data/DefectPrediction/synapse/',
                 # '../Data/DefectPrediction/velocity/',
-                '../Data/DefectPrediction/xerces/'
+                # '../Data/DefectPrediction/xerces/'
                 ]
 
     evals = [25, 50 ,100]
@@ -139,7 +139,7 @@ if __name__ == '__main__':
                 versions = [project + file for file in sorted(os.listdir(project))]
                 groups = [Experiment(versions[i-1], versions[i]) for i in range(1, len(versions))]
                 results = {}
-                for rep in range(1):
+                for rep in range(20):
                     for group in groups:
                         if group not in results.keys():
                             results[group] = {}
@@ -151,7 +151,7 @@ if __name__ == '__main__':
 
                         assert(len(group) == 2), "Something is wrong"
                         default = run_default(group.train, group.test)
-                        automl, model = run_experiment(group.train, group.test, run_count=eval, seed=rep, perf_measure=perf_measure)
+                        automl, model = run_experiment(group.train, group.test, run_count=eval, seed=rep, perf_measure=perf_measures[perf_measure])
                         # automl_all, model_all = run_experiment_all(group.train, group.test, run_count=100, seed=rep)
 
                         print(automl, default)
