@@ -119,7 +119,7 @@ if __name__ == '__main__':
                      }
 
     projects = [
-                # '../Data/DefectPrediction/ant/',
+                 '../Data/DefectPrediction/ant/',
                 # '../Data/DefectPrediction/camel/',
                 # '../Data/DefectPrediction/ivy/',
                  '../Data/DefectPrediction/jedit/',
