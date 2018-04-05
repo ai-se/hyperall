@@ -119,16 +119,49 @@ if __name__ == '__main__':
                      }
 
     projects = [
+<<<<<<< HEAD
                 # '../Data/DefectPrediction/ant/',
+                '../Data/DefectPrediction/camel/',
+=======
+                '../Data/DefectPrediction/ant/',
                 # '../Data/DefectPrediction/camel/',
+<<<<<<< HEAD
+                '../Data/DefectPrediction/ivy/',
+=======
+>>>>>>> 5dcc56a48aa4c3e09a8625871a085d6a93f6b079
                 # '../Data/DefectPrediction/ivy/',
+<<<<<<< HEAD
+                '../Data/DefectPrediction/jedit/',
+=======
+>>>>>>> 6a43d469b254e76336d4161aa0db9f55e225ebae
                 # '../Data/DefectPrediction/jedit/',
+<<<<<<< HEAD
+                '../Data/DefectPrediction/log4j/',
+=======
+>>>>>>> fcdf2bcbbd6bdfa31e769504fbb792299cfc453f
                 # '../Data/DefectPrediction/log4j/',
+<<<<<<< HEAD
+                '../Data/DefectPrediction/lucene/',
+=======
+>>>>>>> 7ea619cee928380c2c60b4c45563ffa5ba0c248c
                 # '../Data/DefectPrediction/lucene/',
+<<<<<<< HEAD
+                '../Data/DefectPrediction/poi/',
+=======
+>>>>>>> a1bdaee3a303386d4799a17f0e382dc35b47bc6b
                 # '../Data/DefectPrediction/poi/',
+<<<<<<< HEAD
+                '../Data/DefectPrediction/synapse/',
+=======
+>>>>>>> ec3aea0b817026a4daec354a648b1f6bf08dcfab
                 # '../Data/DefectPrediction/synapse/',
+<<<<<<< HEAD
+                 '../Data/DefectPrediction/velocity/',
+=======
+>>>>>>> 0f9ef1725cc0c650fadc4143653201b4bf14424f
                 # '../Data/DefectPrediction/velocity/',
-                '../Data/DefectPrediction/xerces/'
+>>>>>>> 663959b4020933709ef4eef9a754cab3945d68d0
+                # '../Data/DefectPrediction/xerces/'
                 ]
 
     evals = [25, 50 ,100]
@@ -139,7 +172,31 @@ if __name__ == '__main__':
                 versions = [project + file for file in sorted(os.listdir(project))]
                 groups = [Experiment(versions[i-1], versions[i]) for i in range(1, len(versions))]
                 results = {}
+<<<<<<< HEAD
                 for rep in range(20):
+=======
+<<<<<<< HEAD
+                for rep in range(1, 20):
+=======
+<<<<<<< HEAD
+                for rep in range(1, 20):
+=======
+<<<<<<< HEAD
+                for rep in range(20):
+=======
+<<<<<<< HEAD
+                for rep in range(1, 20):
+=======
+<<<<<<< HEAD
+                for rep in range(1, 20):
+=======
+                for rep in range(20):
+>>>>>>> 7ea619cee928380c2c60b4c45563ffa5ba0c248c
+>>>>>>> a1bdaee3a303386d4799a17f0e382dc35b47bc6b
+>>>>>>> ec3aea0b817026a4daec354a648b1f6bf08dcfab
+>>>>>>> 0f9ef1725cc0c650fadc4143653201b4bf14424f
+>>>>>>> 663959b4020933709ef4eef9a754cab3945d68d0
+>>>>>>> cfd3c0b062ecbf47559204dad1349811b63b486a
                     for group in groups:
                         if group not in results.keys():
                             results[group] = {}
