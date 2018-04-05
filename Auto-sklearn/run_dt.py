@@ -119,10 +119,23 @@ if __name__ == '__main__':
                      }
 
     projects = [
+<<<<<<< HEAD
                 # '../Data/DefectPrediction/ant/',
+                '../Data/DefectPrediction/camel/',
+=======
+                '../Data/DefectPrediction/ant/',
                 # '../Data/DefectPrediction/camel/',
+<<<<<<< HEAD
+                '../Data/DefectPrediction/ivy/',
+=======
+>>>>>>> 5dcc56a48aa4c3e09a8625871a085d6a93f6b079
                 # '../Data/DefectPrediction/ivy/',
+<<<<<<< HEAD
                 '../Data/DefectPrediction/jedit/',
+=======
+>>>>>>> 6a43d469b254e76336d4161aa0db9f55e225ebae
+                # '../Data/DefectPrediction/jedit/',
+>>>>>>> fcdf2bcbbd6bdfa31e769504fbb792299cfc453f
                 # '../Data/DefectPrediction/log4j/',
                 # '../Data/DefectPrediction/lucene/',
                 # '../Data/DefectPrediction/poi/',
