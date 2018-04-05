@@ -119,11 +119,28 @@ if __name__ == '__main__':
                      }
 
     projects = [
+<<<<<<< HEAD
                 # '../Data/DefectPrediction/ant/',
+                '../Data/DefectPrediction/camel/',
+=======
+                '../Data/DefectPrediction/ant/',
                 # '../Data/DefectPrediction/camel/',
+<<<<<<< HEAD
+                '../Data/DefectPrediction/ivy/',
+=======
+>>>>>>> 5dcc56a48aa4c3e09a8625871a085d6a93f6b079
                 # '../Data/DefectPrediction/ivy/',
+<<<<<<< HEAD
+                '../Data/DefectPrediction/jedit/',
+=======
+>>>>>>> 6a43d469b254e76336d4161aa0db9f55e225ebae
                 # '../Data/DefectPrediction/jedit/',
+<<<<<<< HEAD
                 '../Data/DefectPrediction/log4j/',
+=======
+>>>>>>> fcdf2bcbbd6bdfa31e769504fbb792299cfc453f
+                # '../Data/DefectPrediction/log4j/',
+>>>>>>> 7ea619cee928380c2c60b4c45563ffa5ba0c248c
                 # '../Data/DefectPrediction/lucene/',
                 # '../Data/DefectPrediction/poi/',
                 # '../Data/DefectPrediction/synapse/',
@@ -139,7 +156,11 @@ if __name__ == '__main__':
                 versions = [project + file for file in sorted(os.listdir(project))]
                 groups = [Experiment(versions[i-1], versions[i]) for i in range(1, len(versions))]
                 results = {}
+<<<<<<< HEAD
                 for rep in range(1, 20):
+=======
+                for rep in range(20):
+>>>>>>> 7ea619cee928380c2c60b4c45563ffa5ba0c248c
                     for group in groups:
                         if group not in results.keys():
                             results[group] = {}
