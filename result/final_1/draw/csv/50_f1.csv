@@ -1,0 +1,16 @@
+DTC,smac,18,1.5,1.75
+DTC,de,20,2.0,1.5
+DTC,random,20,2.0,2.0
+DTC,grid,20,2.0,0.0
+KNN,smac,20,2.0,1.0
+KNN,de,18,1.5,1.0
+KNN,random,19,1.5,1.75
+KNN,grid,18,1.5,1.0
+RF,smac,19,1.0,1.0
+RF,de,19,2.0,1.75
+RF,random,22,2.0,1.75
+RF,grid,20,2.0,1.75
+SVM,smac,24,2.0,1.75
+SVM,de,34,3.0,1.0
+SVM,random,34,3.0,1.0
+SVM,grid,36,4.0,1.0
