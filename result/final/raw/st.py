@@ -889,13 +889,10 @@ def rdivDemo(data):
 
     data = map(lambda lst: Num(lst[0], lst[1:]),
                data)
-    # print("")
+    print("")
     ranks = []
     for x in scottknott(data, useA12=True):
         ranks += [(x.rank, x.median(), x)]
-
-    max_rank = max([x[0] for x in ranks])
-    # print(max_rank)
     all = []
     for _, __, x in sorted(ranks): all += x.all
     all = sorted(all)
@@ -903,19 +900,14 @@ def rdivDemo(data):
     line = "----------------------------------------------------"
     last = None
     formatStr = '%%4s , %%%ss ,    %%s   , %%4s ' % The.text
-    # print((formatStr % \
-    #        ('rank', 'name', 'med', 'iqr')) + "\n" + line)
-
-    ret = []
-    for _, __, x in sorted(ranks, reverse=True):
+    print((formatStr % \
+           ('rank', 'name', 'med', 'iqr')) + "\n" + line)
+    for _, __, x in sorted(ranks):
         q1, q2, q3 = x.quartiles()
-        # print((formatStr % \
-        #        (max_rank - x.rank + 1, x.name, q2, q3 - q1)) + \
-        #       xtile(x.all, lo=lo, hi=hi, width=30, show="%5.2f"))
+        print((formatStr % \
+               (x.rank + 1, x.name, q2, q3 - q1)) + \
+              xtile(x.all, lo=lo, hi=hi, width=30, show="%5.2f"))
         last = x.rank
-
-        ret.append([max_rank - x.rank + 1, x.name])
-    return ret
 
 
 def _rdivs():
@@ -956,62 +948,9 @@ def main():
                 now += [word]
     rdivDemo([[k] + v for k, v in all.items()])
 
-def another_main(filename):
-    data = open(filename).readlines()
-    all = {}
-    now = []
-    for line in data:
-        for word in line.split():
-            word = thing(word)
-            if isinstance(word, str):
-                now = all[word] = all.get(word, [])
-            else:
-                now += [word]
-    return rdivDemo([[k] + v for k, v in all.items()])
-
 
 
 if args.demo:
     _rdivs()
 else:
-    perf_measures = ['f1', 'precision', 'time']
-    evals = ['25', '50', '100']
-    collect = {}
-    import pickle
-    for eval in evals:
-        collect[eval] = {}
-        for perf_measure in perf_measures:
-            collect[eval][perf_measure] = {}
-            import os
-            filenames = [f for f in os.listdir(".") if 'csv' in f]
-            filenames = [f for f in filenames if f.split("_")[0] == perf_measure]
-            if perf_measure == "time":
-                filenames = [f for f in filenames if "f1" in f]
-                filenames = [f for f in filenames if f.split('_')[2] == eval]
-            else:
-                filenames = [f for f in filenames if f.split('_')[1] == eval]
-            temp_collect = {}
-            i = 0
-            for filename in filenames:
-                i += 1
-                print(filename)
-                temp = another_main(filename)
-                for t in temp:
-                    if t[1] not in temp_collect.keys():
-                        temp_collect[t[1]] = [t[0]]
-                    else:
-                        temp_collect[t[1]].append(t[0])
-            print("-------" * 5)
-            print(i)
-            print("-------" * 5)
-            import numpy as np
-            for key in sorted(temp_collect.keys()):
-                # print(key)
-                learner = key.split('_')[1]
-                optimizer = key.split('_')[0]
-                if learner not in collect[eval][perf_measure].keys():
-                    collect[eval][perf_measure][learner] = {}
-                collect[eval][perf_measure][learner][optimizer] = (sum(temp_collect[key]), np.median(temp_collect[key]), np.percentile(temp_collect[key], 75) - np.percentile(temp_collect[key], 25))
-
-    with open("collect.p", 'wb') as handle:
-        pickle.dump(collect, handle)
+    main()
