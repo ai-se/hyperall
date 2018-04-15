@@ -1,0 +1,21 @@
+
+\textcolor{huyblack}{default_KNN_50} 0.058 0.057 0.058 0.058
+\textcolor{huyblack}{default_DTC_50} 0.058 0.058 0.057 0.058
+\textcolor{huyblack}{default_RF_50} 0.310 0.546 0.538 0.540
+\textcolor{huyblack}{default_SVM_50} 0.086 0.087 0.087 0.086
+\textcolor{huygray}{smac_KNN_50} 202.384 231.947 228.970 192.236
+\textcolor{huygray}{smac_DTC_50} 188.998 186.777 174.120 192.653
+\textcolor{huygray}{smac_RF_50} 252.078 243.976 232.026 238.769
+\textcolor{huygray}{smac_SVM_50} 165.408 155.169 154.131 155.675
+\textcolor{huygreen}{random_KNN_50} 0.131 0.131 0.131 0.131
+\textcolor{huygreen}{random_DTC_50} 0.072 0.072 0.072 0.072
+\textcolor{huygreen}{random_RF_50} 37.645 37.723 37.721 37.721
+\textcolor{huygreen}{random_SVM_50} 0.134 0.134 0.134 0.134
+\textcolor{huypink}{de_KNN_50} 0.307 0.306 0.307 0.307
+\textcolor{huypink}{de_DTC_50} 0.185 0.185 0.185 0.185
+\textcolor{huypink}{de_RF_50} 103.059 103.138 103.135 103.136
+\textcolor{huypink}{de_SVM_50} 0.303 0.304 0.304 0.304
+\textcolor{huyblue}{grid_KNN_50} 0.072 0.071 0.071 0.072
+\textcolor{huyblue}{grid_DTC_50} 0.104 0.104 0.104 0.105
+\textcolor{huyblue}{grid_RF_50} 34.110 34.188 34.186 34.186
+\textcolor{huyblue}{grid_SVM_50} 0.182 0.182 0.182 0.182
