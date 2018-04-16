@@ -74,7 +74,6 @@ def run_experiment(train, test, seed, run_count, perf_measure):
     test_Y = [0 if x==0 else 1 for x in test_ds[test_dep_column]]
     assert(train_X.shape[0] == len(train_Y)), "Something is wrong"
 
-
     automl = autosklearn.classification.AutoSklearnClassifier(
         time_left_for_this_task=3600,
         per_run_time_limit=30,
@@ -84,7 +83,6 @@ def run_experiment(train, test, seed, run_count, perf_measure):
         include_preprocessors = ["no_preprocessing", ], exclude_preprocessors = None,
         ensemble_size=0,
         seed=seed,
-        smac_scenario_args={'runcount_limit': run_count}
     )
 
     # fit() changes the data in place, but refit needs the original data. We
@@ -106,8 +104,6 @@ def run_experiment(train, test, seed, run_count, perf_measure):
     return [confusion_matrix, time() - start_time], automl.show_models()
 
 
-
-
 if __name__ == '__main__':
     import collections
     Experiment = collections.namedtuple('Experiment', 'train test')
@@ -119,92 +115,29 @@ if __name__ == '__main__':
                      }
 
     projects = [
-<<<<<<< HEAD
                 # '../Data/DefectPrediction/ant/',
-                '../Data/DefectPrediction/camel/',
-=======
-                '../Data/DefectPrediction/ant/',
                 # '../Data/DefectPrediction/camel/',
-<<<<<<< HEAD
-                '../Data/DefectPrediction/ivy/',
-=======
->>>>>>> 5dcc56a48aa4c3e09a8625871a085d6a93f6b079
                 # '../Data/DefectPrediction/ivy/',
-<<<<<<< HEAD
-                '../Data/DefectPrediction/jedit/',
-=======
->>>>>>> 6a43d469b254e76336d4161aa0db9f55e225ebae
                 # '../Data/DefectPrediction/jedit/',
-<<<<<<< HEAD
-                '../Data/DefectPrediction/log4j/',
-=======
->>>>>>> fcdf2bcbbd6bdfa31e769504fbb792299cfc453f
                 # '../Data/DefectPrediction/log4j/',
-<<<<<<< HEAD
-                '../Data/DefectPrediction/lucene/',
-=======
->>>>>>> 7ea619cee928380c2c60b4c45563ffa5ba0c248c
                 # '../Data/DefectPrediction/lucene/',
-<<<<<<< HEAD
-                '../Data/DefectPrediction/poi/',
-=======
->>>>>>> a1bdaee3a303386d4799a17f0e382dc35b47bc6b
                 # '../Data/DefectPrediction/poi/',
-<<<<<<< HEAD
-                '../Data/DefectPrediction/synapse/',
-=======
->>>>>>> ec3aea0b817026a4daec354a648b1f6bf08dcfab
                 # '../Data/DefectPrediction/synapse/',
-<<<<<<< HEAD
-                 '../Data/DefectPrediction/velocity/',
-=======
->>>>>>> 0f9ef1725cc0c650fadc4143653201b4bf14424f
                 # '../Data/DefectPrediction/velocity/',
->>>>>>> 663959b4020933709ef4eef9a754cab3945d68d0
                 # '../Data/DefectPrediction/xerces/'
                 ]
 
-    evals = [25, 50 ,100]
-
     for perf_measure in perf_measures.keys():
-        for eval in evals:
             for project in projects:
                 versions = [project + file for file in sorted(os.listdir(project))]
                 groups = [Experiment(versions[i-1], versions[i]) for i in range(1, len(versions))]
                 results = {}
-<<<<<<< HEAD
-                for rep in range(20):
-=======
-<<<<<<< HEAD
-                for rep in range(1, 20):
-=======
-<<<<<<< HEAD
-                for rep in range(1, 20):
-=======
-<<<<<<< HEAD
-                for rep in range(20):
-=======
-<<<<<<< HEAD
-                for rep in range(1, 20):
-=======
-<<<<<<< HEAD
-                for rep in range(1, 20):
-=======
-                for rep in range(20):
->>>>>>> 7ea619cee928380c2c60b4c45563ffa5ba0c248c
->>>>>>> a1bdaee3a303386d4799a17f0e382dc35b47bc6b
->>>>>>> ec3aea0b817026a4daec354a648b1f6bf08dcfab
->>>>>>> 0f9ef1725cc0c650fadc4143653201b4bf14424f
->>>>>>> 663959b4020933709ef4eef9a754cab3945d68d0
->>>>>>> cfd3c0b062ecbf47559204dad1349811b63b486a
+                for rep in range(10):
                     for group in groups:
                         if group not in results.keys():
                             results[group] = {}
                             results[group]['automl'] = []
-                            # results[group]['automl_all'] = []
                             results[group]['default'] = []
-                            results[group]['automl_model'] = []
-                            # results[group]['automl_all_model'] = []
 
                         assert(len(group) == 2), "Something is wrong"
                         default = run_default(group.train, group.test)
@@ -214,10 +147,7 @@ if __name__ == '__main__':
                         print(automl, default)
 
                         results[group]['automl'].append(automl)
-                        # results[group]['automl_all'].append(automl_all)
                         results[group]['default'].append(default)
-                        results[group]['automl_model'].append(model)
-                        # results[group]['automl_all_model'].append(model_all)
 
-                    pickle.dump(results, open('./PickleLocker_dt_' + perf_measure + '_' +str(eval)+'/' + project.replace(data_folder, '')[:-1] + '_' + str(rep) + '.p', 'wb'))
+                    pickle.dump(results, open('./PickleLocker_dt_' + perf_measure + '/' + project.replace(data_folder, '')[:-1] + '_' + str(rep) + '.p', 'wb'))
 
