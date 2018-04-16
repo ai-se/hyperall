@@ -83,7 +83,6 @@ def run_experiment(train, test, seed, run_count, perf_measure):
         include_preprocessors = ["no_preprocessing", ], exclude_preprocessors = None,
         ensemble_size=0,
         seed=seed,
-        smac_scenario_args={'runcount_limit': run_count}
     )
 
     # fit() changes the data in place, but refit needs the original data. We
@@ -150,5 +149,5 @@ if __name__ == '__main__':
                         results[group]['automl'].append(automl)
                         results[group]['default'].append(default)
 
-                    pickle.dump(results, open('./PickleLocker_dt_' + perf_measure + '_' +str(eval)+'/' + project.replace(data_folder, '')[:-1] + '_' + str(rep) + '.p', 'wb'))
+                    pickle.dump(results, open('./PickleLocker_dt_' + perf_measure + '/' + project.replace(data_folder, '')[:-1] + '_' + str(rep) + '.p', 'wb'))
 

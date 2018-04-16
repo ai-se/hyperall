@@ -75,7 +75,6 @@ def run_experiment(train, test, seed, run_count, perf_measure):
     test_Y = [0 if x==0 else 1 for x in test_ds[test_dep_column]]
     assert(train_X.shape[0] == len(train_Y)), "Something is wrong"
 
-
     automl = autosklearn.classification.AutoSklearnClassifier(
         time_left_for_this_task=3600,
         per_run_time_limit=30,
@@ -84,8 +83,7 @@ def run_experiment(train, test, seed, run_count, perf_measure):
         include_estimators=["libsvm_svc", ], exclude_estimators=None,
         include_preprocessors = ["no_preprocessing", ], exclude_preprocessors = None,
         ensemble_size=0,
-        seed=seed,
-        smac_scenario_args={'runcount_limit': run_count}
+        seed=seed
     )
 
     # fit() changes the data in place, but refit needs the original data. We
@@ -127,41 +125,26 @@ if __name__ == '__main__':
                 # '../Data/DefectPrediction/log4j/',
                 # '../Data/DefectPrediction/lucene/',
                 # '../Data/DefectPrediction/poi/',
-                 '../Data/DefectPrediction/synapse/',
+                #  '../Data/DefectPrediction/synapse/',
                 # '../Data/DefectPrediction/velocity/',
-                #'../Data/DefectPrediction/xerces/'
+                # '../Data/DefectPrediction/xerces/'
                 ]
 
-    evals = [25, 50 ,100]
-
     for perf_measure in perf_measures.keys():
-        for eval in evals:
-            for project in projects:
-                versions = [project + file for file in sorted(os.listdir(project))]
-                groups = [Experiment(versions[i-1], versions[i]) for i in range(1, len(versions))]
-                results = {}
-                for rep in range(20):
-                    for group in groups:
-                        if group not in results.keys():
-                            results[group] = {}
-                            results[group]['automl'] = []
-                            # results[group]['automl_all'] = []
-                            results[group]['default'] = []
-                            results[group]['automl_model'] = []
-                            # results[group]['automl_all_model'] = []
+        for project in projects:
+            versions = [project + file for file in sorted(os.listdir(project))]
+            groups = [Experiment(versions[i-1], versions[i]) for i in range(1, len(versions))]
+            results = {}
+            for rep in range(10):
+                for group in groups:
+                    if group not in results.keys():
+                        results[group] = {}
+                        results[group]['automl'] = []
 
-                        assert(len(group) == 2), "Something is wrong"
-                        default = run_default(group.train, group.test)
-                        automl, model = run_experiment(group.train, group.test, run_count=eval, seed=rep, perf_measure=perf_measures[perf_measure])
-                        # automl_all, model_all = run_experiment_all(group.train, group.test, run_count=100, seed=rep)
+                    assert(len(group) == 2), "Something is wrong"
+                    automl, model = run_experiment(group.train, group.test, run_count=eval, seed=rep, perf_measure=perf_measures[perf_measure])
 
-                        print(automl, default)
+                    results[group]['automl'].append(automl)
 
-                        results[group]['automl'].append(automl)
-                        # results[group]['automl_all'].append(automl_all)
-                        results[group]['default'].append(default)
-                        results[group]['automl_model'].append(model)
-                        # results[group]['automl_all_model'].append(model_all)
-
-                    pickle.dump(results, open('./PickleLocker_svm_' + perf_measure + '_' +str(eval)+'/' + project.replace(data_folder, '')[:-1] + '_' + str(rep) + '.p', 'wb'))
+                pickle.dump(results, open('./PickleLocker_svm_' + perf_measure + '/' + project.replace(data_folder, '')[:-1] + '_' + str(rep) + '.p', 'wb'))
 
