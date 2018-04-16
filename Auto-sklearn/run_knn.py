@@ -7,8 +7,15 @@ from time import time
 from sklearn.neighbors import KNeighborsClassifier
 
 import autosklearn.classification
+import autosklearn.metrics
 import pandas as pd
 import pickle
+
+
+def accuracy_wk(solution, prediction, dummy):
+    # function defining accuracy and accepting an additional argument
+    assert dummy is None
+    return np.mean(solution == prediction)
 
 def run_default(train, test, perf_measure=None):
     start_time = time()
@@ -122,7 +129,7 @@ if __name__ == '__main__':
                  '../Data/DefectPrediction/ant/',
                 # '../Data/DefectPrediction/camel/',
                 # '../Data/DefectPrediction/ivy/',
-                 '../Data/DefectPrediction/jedit/',
+                #  '../Data/DefectPrediction/jedit/',
                 # '../Data/DefectPrediction/log4j/',
                 # '../Data/DefectPrediction/lucene/',
                 # '../Data/DefectPrediction/poi/',
