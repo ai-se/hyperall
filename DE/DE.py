@@ -6,20 +6,25 @@ sys.dont_write_bytecode = True
 from collections import OrderedDict, namedtuple
 from random import random, randint, uniform, seed, choice, sample
 import numpy as np
+import math
+import time
+import pdb
 
 __all__ = ['DE']
 Individual = namedtuple('Individual', 'ind fit')
 
 class DE(object):
-    def __init__(self, F=0.3, CR=0.7, NP=10, GEN=2, Goal="Max", termination="Early"):
+    def __init__(self, F=0.3, CR=0.7, NP=10, GEN=0, Goal="Max", termination="Early", num_lifes=5, eval_time=600):
         self.F=F
         self.CR=CR
         self.NP=NP
         self.GEN=GEN
         self.GOAL=Goal
         self.termination=termination
-        seed(1)
-        np.random.seed(1)
+        self.eval_time=eval_time
+        self.termination_lifes=num_lifes
+        self.start_time=0
+        self.num_evals=0
 
     def initial_pop(self):
         l=[]
@@ -50,29 +55,56 @@ class DE(object):
 
     ## Paras will be keyword with default values, and bounds would be list of tuples
     def solve(self, fitness, paras=OrderedDict(), bounds=[], category=[], *r):
+        self.start_time = time.time()
         self.para_len=len(paras.keys())
         self.para_dic=paras
         self.para_category=category
         self.bounds=bounds
         self.randomisation_functions()
+        self.cur_gen = []
         initial_population=self.initial_pop()
-
-        self.cur_gen = [Individual(OrderedDict(ind), fitness(ind, *r))
-                        for ind in initial_population]
-
+        for individual in initial_population:
+            individual_score = fitness(individual, *r)
+            self.cur_gen.append(Individual(OrderedDict(individual), individual_score))
         if self.termination=='Early':
-            return self.early_termination(fitness,*r)
-
+            return self.early_termination_1(fitness,*r)
         else:
             return self.late_termination(fitness,*r)
 
+
+    def early_termination_1(self,fitness,*r):
+        run_flag = True
+        while run_flag:
+            temp = []
+            for i in range(len(self.cur_gen)):
+                v = self._extrapolate(self.cur_gen[i])
+                trial_ind = Individual(OrderedDict(v), fitness(v, *r))
+                val_temp = self._selection_per_eval(trial_ind, self.cur_gen[i])
+                if math.isnan(val_temp.fit):
+                    temp.append(Individual(val_temp.ind, 0.0))
+                else:
+                    temp.append(Individual(val_temp.ind, val_temp.fit))
+
+                if self.num_evals > 0 and i > 0:
+                    if temp[i].fit <= temp[i-1].fit:
+                        self.termination_lifes -= 1
+                self.num_evals += 1
+                temp_duration = time.time() - self.start_time
+                if temp_duration > self.eval_time or self.termination_lifes == 0:
+                    run_flag = False
+                    break
+            self.cur_gen = temp
+        best_index = self._get_best_index()
+        tuning_time = time.time() - self.start_time
+        return self.cur_gen[best_index], self.num_evals, tuning_time
+
+
     def early_termination(self,fitness,*r):
-        for x in range(self.GEN):
+        for x in self.GEN:
             trial_generation = []
             for ind in self.cur_gen:
                 v = self._extrapolate(ind)
-                #print(v)
-                trial_generation.append(Individual(OrderedDict(v), fitness(v,*r)))
+                trial_generation.append(Individual(OrderedDict(v), fitness(v, *r)))
 
             current_generation = self._selection(trial_generation)
             self.cur_gen=current_generation
@@ -129,6 +161,18 @@ class DE(object):
             l.append(a.ind)
         return l
 
+    def _selection_per_eval(self, a, b):
+        if self.GOAL=='Max':
+            if a.fit >= b.fit:
+                return a
+            else:
+                return b
+        else:
+            if a.fit <= b.fit:
+                return a
+            else:
+                return b
+
     def _selection(self, trial_generation):
         generation = []
 
@@ -151,14 +195,19 @@ class DE(object):
             best = 0
             max_fitness=-float("inf")
             for i, x in enumerate(self.cur_gen):
-                if x.fit >= max_fitness:
+                val_xfit = x.fit
+                if math.isnan(val_xfit):
+                    val_xfit = 0
+                if val_xfit >= max_fitness:
                     best = i
-                    max_fitness = x.fit
+                    max_fitness = val_xfit
             return best
         else:
             best = 0
             max_fitness = float("inf")
             for i, x in enumerate(self.cur_gen):
+                if math.isnan(x.fit):
+                    x.fit = 0
                 if x.fit <= max_fitness:
                     best = i
                     max_fitness = x.fit
